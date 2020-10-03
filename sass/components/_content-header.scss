@@ -1,0 +1,23 @@
+.content-header {
+  height: 4rem;
+  width: 119.6rem;
+  background-color: white;
+  color: black;
+
+  &__item {
+    float: right;
+    margin-top: 1.5rem;
+
+    & img {
+      float: right;
+      width: 10px;
+    }
+
+    &:first-child {
+      margin-right: 2rem;
+    }
+    &:not(:last-child) {
+      margin-left: 2rem;
+    }
+  }
+}
