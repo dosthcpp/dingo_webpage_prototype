@@ -4,8 +4,6 @@ const url = require("url");
 
 let win;
 
-ipcMain.handle("show_popup", (e, arg) => {});
-
 function createWindow() {
   /*
    * 넓이 1920에 높이 1080의 FHD 풀스크린 앱을 실행시킵니다.
@@ -14,15 +12,10 @@ function createWindow() {
     width: 1920,
     height: 1080,
     webPreferences: {
+      preload: path.join(__dirname + "preload.js"),
+      contextIsolation: false,
       nodeIntegration: true,
-    },
-  });
-
-  const popup = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      nodeIntegration: true,
+      enableRemoteModule: true,
     },
   });
 

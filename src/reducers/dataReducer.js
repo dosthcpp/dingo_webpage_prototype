@@ -1,4 +1,4 @@
-import { GET_DATA, GET_AGREEMENT } from "../actions/types";
+import { GET_PARENT_LIST, GET_AGREEMENT } from "../actions/types";
 
 const INITIAL_STATE = {
   data: [],
@@ -7,7 +7,7 @@ const INITIAL_STATE = {
 
 export const fetchReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case GET_DATA:
+    case GET_PARENT_LIST:
       return { ...state, data: action.payload };
     case GET_AGREEMENT:
       return { ...state, agreement: action.payload };

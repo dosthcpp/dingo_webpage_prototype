@@ -1,25 +1,14 @@
 import React from "react";
-import Header from "./components/Header";
-import Menu from "./components/Menu";
-import SideMenu from "./components/SideMenu";
-import ContentHeader from "./components/ContentHeader";
-import Content from "./components/Content";
 import "./css/style.css";
+import { Route } from "react-router-dom";
+import Main from "./pages/Main";
+import AddAgreement from "./pages/AddAgreement";
 
 const App = () => {
   return (
     <div>
-      <div>
-        <Header />
-      </div>
-      <div>
-        <Menu />
-        <SideMenu />
-      </div>
-      <div>
-        <ContentHeader />
-        <Content />
-      </div>
+      <Route exact path="/" component={Main} />
+      <Route exact path="/add" component={AddAgreement} />
     </div>
   );
 };

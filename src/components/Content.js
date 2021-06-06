@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import 동의서 from "../icons/동의서.png";
 import 동의 from "../icons/동의.png";
-import { baseURL } from "../api/api";
 import { fetchParentList, fetchAgreementList } from "../actions";
+
 // const { ipcRenderer } = window.require("electron");
 
 const Content = ({
@@ -25,7 +25,7 @@ const Content = ({
     } catch (e) {
       console.log(e);
     }
-  }, [fetchedParentList]);
+  }, [fetchAgreementList, fetchedParentList]);
 
   useEffect(() => {
     try {
@@ -33,7 +33,7 @@ const Content = ({
     } catch (e) {
       console.log(e);
     }
-  }, [fetchedAgreement]);
+  }, [fetchAgreementList, fetchedAgreement]);
 
   useEffect(() => {
     fetchParentList();
@@ -53,7 +53,8 @@ const Content = ({
         <button
           className={`classname classname-${idx}`}
           style={{
-            backgroundColor: selected === idx ? "lightblue" : "#f8f9fa",
+            backgroundColor:
+              selected === idx ? "lightCornflowerBlue" : "#f8f9fa",
           }}
           onClick={() => {
             setSelected(idx);
@@ -65,32 +66,30 @@ const Content = ({
     });
   };
 
-  const renderParentList1 = () => {
+  const renderParentList = () => {
     if (!parentList) {
       return null;
     } else {
-      return parentList.map((cur, idx) => {
+      return parentList.map((name, idx) => {
         return (
           <div className={"main-content__parent-list-item"}>
-            <div className={"main-content__parent-list-item-name"}>
-              {cur.name}
-            </div>
+            <div className={"main-content__parent-list-item-name"}>{name}</div>
             <button
               className={`main-content__parent-list-item-button-${idx}`}
               style={{
                 border:
                   selectedParent === idx
-                    ? "1.5px solid blue"
+                    ? "1.5px solid CornflowerBlue"
                     : "1.5px solid black",
                 boxShadow:
                   selectedParent === idx
-                    ? "0.5px 1px 5px lightblue"
+                    ? "0.5px 1px 5px lightCornflowerBlue"
                     : "0.5px 1px 5px gray",
-                color: selectedParent === idx ? "blue" : "gray",
+                color: selectedParent === idx ? "CornflowerBlue" : "gray",
               }}
               onClick={() => {
                 setSelectedParent(idx);
-                setSelectedName(cur.name);
+                setSelectedName(name);
               }}
             >
               확인하기
@@ -106,7 +105,7 @@ const Content = ({
       <div
         className="main-content-div-4__item-icon-container"
         style={{
-          backgroundColor: isAgreed ? "blue" : "lightgray",
+          backgroundColor: isAgreed ? "CornflowerBlue" : "lightgray",
         }}
       >
         <img
@@ -122,34 +121,36 @@ const Content = ({
   };
 
   const renderConsentStatementList = () => {
-    return Array.from(agreementList[1]).map((cur, idx) => {
-      return cur.kid_name === selectedName ? (
+    return Array.from(agreementList).map((cur, idx) => {
+      return (
         <div className="main-content-div-4__container">
           <div
             className={`main-content-div-4__item-${idx}`}
             style={{
-              border: cur[3] ? "3px solid blue" : "3px solid lightgray",
+              border: cur["isAgreed"]
+                ? "3px solid CornflowerBlue"
+                : "3px solid lightgray",
             }}
           >
             <div className={"main-content-div-4__item-title"}>{cur.title}</div>
             <div className={"main-content-div-4__item-subtitle"}>
-              {cur.sub_contents}
+              {cur["sub_contents"]}
             </div>
             <div className={"main-content-div-4__item-date"}>
-              {cur.updated_at.split("T")[0].split("-").join(".")}
+              {cur["updated_at"]}
             </div>
-            {consentIcon(cur.isAgreed)}
+            {consentIcon(cur["isAgreed"])}
             <div className="main-content-div-4__item-more">더보기</div>
           </div>
         </div>
-      ) : null;
+      );
     });
   };
 
   const renderSwitch = () => {
     switch (selected) {
       case 0:
-        return renderParentList1();
+        return renderParentList();
       default:
         break;
     }
@@ -190,13 +191,23 @@ const Content = ({
         <div className="main-content-div-5__container">
           <button
             onClick={() => {
-              // ipcRenderer.send("show_popup");
-              const win = window.open(baseURL + "/public/addagreement.html");
+              window.require = require;
+              const { BrowserWindow } = window.require("electron").remote;
+              const path = window.require("path");
+              const isDev = window.require("electron-is-dev");
+              win.loadURL("http://localhost:3000/add");
+              let win = new BrowserWindow({ width: 960, height: 540 });
+              // win.loadURL(
+              //   isDev
+              //     ? "http://localhost:3000/add"
+              //     : `file://${path.join(__dirname, "../build/index.html#add")}`
+              // );
               const timer = setInterval(function () {
                 if (win.closed) {
                   clearInterval(timer);
                   fetchConsent();
                 }
+                // 1초 있다가 동의서 목록 불러옴
               }, 1000);
             }}
             className="main-content-div-5__button"
